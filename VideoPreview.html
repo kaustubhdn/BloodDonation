@@ -1,0 +1,121 @@
+<!-- <!DOCTYPE html>
+<html>
+<head>
+    <title>YouTube Video Preview</title>
+    <style>
+        /* Add CSS styles for the video preview container */
+        #videoContainer {
+            max-width: 640px;
+            margin: 20px auto;
+        }
+
+        /* Style the input and button */
+        input[type="text"], button {
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        /* Style the YouTube player */
+        #youtubePlayer {
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <h1>YouTube Video Preview</h1>
+    <input type="text" id="videoURL" placeholder="Enter YouTube video URL">
+    <button onclick="loadYouTubeVideo()">Preview</button>
+    <div id="videoContainer">
+        <div id="youtubePlayer"></div>
+    </div>
+    <form action="/convert" method="POST" enctype="multipart/form-data">
+        <input type="file" name="video" accept="video/*">
+        <input type="submit" value="Convert to Audio">
+    </form>
+    
+
+    <script src="https://www.youtube.com/iframe_api"></script>
+    <script>
+        // This function will be called when the YouTube API is loaded
+        function onYouTubeIframeAPIReady() {
+            // You can set default options here if needed
+        }
+
+        function loadYouTubeVideo() {
+            const videoURL = document.getElementById("videoURL").value;
+            const youtubePlayerContainer = document.getElementById("youtubePlayer");
+
+            // Create a new YouTube player
+            const player = new YT.Player('youtubePlayer', {
+                height: '360',
+                width: '640',
+                videoId: extractVideoId(videoURL), // Extract the video ID from the URL
+                playerVars: {
+                    'autoplay': 1, // Autoplay the video
+                },
+                events: {
+                    'onReady': onPlayerReady,
+                }
+            });
+        }
+
+        function onPlayerReady(event) {
+            // Video player is ready, you can perform additional actions here if needed
+        }
+
+        // Function to extract the video ID from a YouTube URL
+        function extractVideoId(url) {
+            const regExp = /^.*(?:youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#\&\?]*).*/;
+            const match = url.match(regExp);
+            if (match && match[1].length === 11) {
+                return match[1];
+            } else {
+                // Handle invalid YouTube URLs here
+                console.error("Invalid YouTube URL");
+                return null;
+            }
+        }
+    </script>
+</body>
+</html> -->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>YouTube Video to Audio Converter</title>
+</head>
+<body>
+    <h1>YouTube Video to Audio Converter</h1>
+    <input type="text" id="videoURL" placeholder="Enter YouTube video URL">
+    <button onclick="convertToAudio()">Convert to Audio</button>
+
+    <div id="audioDownloadLink">
+        <!-- The download link will be displayed here -->
+    </div>
+
+    <script>
+        function convertToAudio() {
+            const videoURL = document.getElementById("videoURL").value;
+            
+            // Send the video URL to the server for conversion
+            fetch(`/convert?videoURL=${encodeURIComponent(videoURL)}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Display the download link for the audio file
+                        const audioDownloadLink = document.getElementById("audioDownloadLink");
+                        audioDownloadLink.innerHTML = `<a href="${data.audioURL}" download>Download Audio</a>`;
+                    } else {
+                        // Handle conversion failure or errors
+                        alert("Error converting video to audio.");
+                    }
+                })
+                .catch(error => {
+                    console.error("Conversion request failed:", error);
+                    alert("Error converting video to audio.");
+                });
+        }
+    </script>
+</body>
+</html>
+
